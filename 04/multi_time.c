@@ -20,12 +20,50 @@ void* worker_sum(void* arg)
  
     printf("Current thread no is : %d\n", current_thread_data->thread_number);
 //determine the bounds
-
-    
+	int thread_start = gettid();
+	if(thread_start >1){
+		int startpart = 50000000;
+		int endpart = 100000000;
+	}
     printf("Here we will sum %d to %d\n", arr[startpart], arr[endpart - 1]);
 //Generate the sum
    
-    sum += current_thread_sum;
+    //sum += current_thread_sum;
  
     return NULL;
+}
+int main()
+{
+    //let the array consists of first MAX_NO_OF_ELEMENTS integers,
+    //1 to MAX_NO_OF_ELEMENTS
+    for (int i = 0; i < MAX_NO_OF_ELEMENTS; i++){
+        arr[i] = i + 1;
+    }
+    //pthread objects
+    pthread_t id[MAX_NO_OF_THREADS];
+   
+    //argument data to send in worker functions
+    arg_data arg_arr[MAX_NO_OF_THREADS];
+   
+    //total number of threads we will create
+    int no_of_threads = MAX_NO_OF_THREADS;
+    printf("Creating %d number of threads...\n", no_of_threads);
+//Setup timing
+    clock_t start, end;
+    double cpu_time_taken;
+    start = clock();
+    int thread_no = 1;
+   
+    //creating the child threads
+  for(int i =0; i<no_of_threads;i++){
+    pthread_create(&id[i], arg_arr[i], worker_sum,NULL);
+
+  } 
+    //joining the threads one by one
+    end = clock();
+    cpu_time_taken = ((double)(end - start)) / CLOCKS_PER_SEC;
+    printf("All child threads has finished their works...\n");
+    printf("Total sum: %lld\n", sum);
+    printf("Time taken to sum all the numbers are %lf\n", cpu_time_taken);
+    return 0;
 }
