@@ -62,19 +62,28 @@ temp[10];
      
     // Prepare Output
     printf("\nProcess ID\t\tArrival Time\t\tBurst Time\t Turnaround Time\tWaiting Time\n");
- 
+
     // Perform Scheduling Calculations
-    if (!round_robin_algorithm)
+    if (round_robin_algorithm)
     {
        
     }
     else
     {
-       
+
+      for(int i = 0;i<num_processes -1; i ++){
+	average_wait_time = average_wait_time + arrival_time[i];
+      }
+      average_wait_time = average_wait_time/(num_processes);
+      for (int i =0;i<num_processes; i++){
+	  turnaround_time = turnaround_time + burst_time[i];
+      }
+      average_turnaround_time = turnaround_time/num_processes;
+
     }
     // Calculate & Print Average Wait and Turnaround Times
-    average_wait_time = 0;
-    average_turnaround_time = 0;
+    //average_wait_time = 0;
+    //average_turnaround_time = 0;
     printf("\n\nAverage Waiting Time:\t%f", average_wait_time);
     printf("\nAvg Turnaround Time:\t%f\n", average_turnaround_time);
     return 0;
