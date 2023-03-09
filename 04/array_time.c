@@ -19,7 +19,7 @@ int main()
 
     }
     end = clock();
-    cpu_time_taken = end - start;
+    cpu_time_taken =(double)( end - start);
     printf("Total sum: %lld\n", sum);
     printf("Time taken to sum all the numbers are %lf\n", cpu_time_taken);
     return 0;

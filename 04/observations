@@ -1,0 +1,15 @@
+1) single thread: the time taken to sum all numbers was 172
+
+2) multi thread: the multi time was not constant which is odd. i got 0.15600,0.12500 and 0.15
+
+
+3) the multi threaded program is way faster. this does not make much sense to me as i assumed the single thread 
+would be ~1/2 as fast as the program with 2 threads but i am pretty positive i did the programming right.
+
+4)i noticed that the program would not get much faster after 4 threads. i assume this is due to the time it takes to create/join 
+threads
+
+5)My conclusion is multiple threads, even just 2 as opposed to 1, makes our brute force problems much more efficient.
+a single thread tasked with summing a large array was 172 time units(presumably milliseconds) and a process with
+2 threads was ~0.15600. i assume this may be because of the time it takes to sum large numbers. dividing those
+numbers takes a large amount of time off of our execution.
