@@ -70,16 +70,21 @@ temp[10];
     }
     else
     {
+	int old_arrival=0;
+      for(int i = 0;i<num_processes; i ++){
+	average_wait_time = average_wait_time + burst_time[i];
+ 
+	turnaround_time = turnaround_time + burst_time[i]-arrival_time[i]+old_arrival;
+	wait_time = turnaround_time-burst_time[i];
+	old_arrival = arrival_time[i];
+	average_turnaround_time = average_turnaround_time + turnaround_time;
+    	printf("\nProcess[%d]\t\t %d \t\t\t %d\t \t \t%d \t\t%d\n",i,arrival_time[i],burst_time[i],turnaround_time,wait_time);
 
-      for(int i = 0;i<num_processes -1; i ++){
-	average_wait_time = average_wait_time + arrival_time[i];
-      }
-      average_wait_time = average_wait_time/(num_processes);
-      for (int i =0;i<num_processes; i++){
-	  turnaround_time = turnaround_time + burst_time[i];
-      }
-      average_turnaround_time = turnaround_time/num_processes;
 
+     	
+      }
+      average_turnaround_time = average_turnaround_time/num_processes;
+average_wait_time = average_wait_time/num_processes;
     }
     // Calculate & Print Average Wait and Turnaround Times
     //average_wait_time = 0;
