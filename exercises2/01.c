@@ -72,10 +72,11 @@ temp[10];
 	       bool done = false;
        for(int i = 0; i < num_processes; i++){
 	      // this for loop changes a bool and breaks out of for loop if the processes are not done running
-	if(burst_time[i]>=0){
-		done = true;
+	if(burst_time[i]>0){
+		done = false;
 		break;
 		}
+	     done = true;
 	   }
        if(done == true){
 	   break;
@@ -85,8 +86,8 @@ temp[10];
 		burst_time[i] = burst_time[i]-time_quantum;
 	}
 		//these are tests so we print something
-	   average_wait_time++;
-	   average_turnaround_time ++;
+	   average_wait_time = 10;
+	   average_turnaround_time =10;
        }
        //end of while(true) loop. this means all processes are done executing 
     }
