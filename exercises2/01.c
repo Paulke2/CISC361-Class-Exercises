@@ -9,7 +9,7 @@ time_quantum =0;
     int wait_time = 0, turnaround_time = 0, arrival_time[10], burst_time[10],
 temp[10];
     float average_wait_time = 0, average_turnaround_time = 0;
-    bool round_robin_algorithm = false;
+    bool round_robin_algorithm = true;
     for(i = 0; i < 10; i++)
     {
         arrival_time[i] = 0;
@@ -66,7 +66,29 @@ temp[10];
     // Perform Scheduling Calculations
     if (round_robin_algorithm)
     {
-       
+       //loop through burst times and check if all 0. break out if one >0 and in the for loop have a bool indicating
+       //if they are done their burst. if they are, break out of while loop
+       while(true){
+	       bool done = false;
+       for(int i = 0; i < num_processes; i++){
+	      // this for loop changes a bool and breaks out of for loop if the processes are not done running
+	if(burst_time[i]>=0){
+		done = true;
+		break;
+		}
+	   }
+       if(done == true){
+	   break;
+       }
+	//if they are not done and need more time, loop through burst times and subtract quantum.
+	for(int i = 0; i < num_processes; i++){
+		burst_time[i] = burst_time[i]-time_quantum;
+	}
+		//these are tests so we print something
+	   average_wait_time++;
+	   average_turnaround_time ++;
+       }
+       //end of while(true) loop. this means all processes are done executing 
     }
     else
     {
