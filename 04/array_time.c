@@ -15,7 +15,7 @@ int main()
     double cpu_time_taken;
     start = clock();
     for (int i =0; i<MAX_NO_OF_ELEMENTS; i++){
-	sum += i;
+	sum += arr[i];
 
     }
     end = clock();
