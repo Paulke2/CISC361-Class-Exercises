@@ -66,8 +66,11 @@ temp[10];
     // Perform Scheduling Calculations
     if (round_robin_algorithm)
     {
+	//int burst_temp = burst_time;
+	int turn_arounds[10];
        //loop through burst times and check if all 0. break out if one >0 and in the for loop have a bool indicating
-       //if they are done their burst. if they are, break out of while loop
+       //if they are done their burst. if they are, break out of while loopi
+       int time_passed = 0;
        while(true){
 	       bool done = false;
        for(int i = 0; i < num_processes; i++){
@@ -81,15 +84,41 @@ temp[10];
        if(done == true){
 	   break;
        }
+       
+
 	//if they are not done and need more time, loop through burst times and subtract quantum.
 	for(int i = 0; i < num_processes; i++){
-		burst_time[i] = burst_time[i]-time_quantum;
+		//we will need a var. to keep track of time passed. we will add the subtracted burst_time to
+		if(burst_time[i]-time_quantum > 0) {
+			time_passed = time_passed +(time_quantum);
+			burst_time[i] = burst_time[i] - time_quantum;
+		}else if(burst_time[i] !=-999 && burst_time[i] !=0){
+			//else we need to add the remaining burst time to time_passed, then set burst to -999 so we do not write over the turn around
+			time_passed = time_passed + burst_time[i];
+			turn_arounds[i]=time_passed;
+			burst_time[i]=-999;
+			
+		}if(burst_time[i]==0){
+			turn_arounds[i]=time_passed;
+			burst_time[i]=-999;
+		
 	}
-		//these are tests so we print something
-	   average_wait_time = 10;
-	   average_turnaround_time =10;
+
+
+	   
        }
        //end of while(true) loop. this means all processes are done executing 
+       }
+	//now subract the arival for each turn around to get final turn around	
+	
+       //printing for testing
+       printf("this is before subbing arrival. these are the turn arounds");
+
+       for (int i =0; i<num_processes; i++){
+	printf("%d \n",turn_arounds[i]);
+       }
+
+       //now we need to do wait time. set burst_time back to burst_temp then for waiting time== turnaround - burst time 
     }
     else
     {
