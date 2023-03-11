@@ -62,7 +62,9 @@ temp[10];
      
     // Prepare Output
     printf("\nProcess ID\t\tArrival Time\t\tBurst Time\t Turnaround Time\tWaiting Time\n");
+	
 
+  
     // Perform Scheduling Calculations
     if (round_robin_algorithm)
     {
@@ -97,13 +99,23 @@ temp[10];
 			time_passed = time_passed + burst_time[i];
 			turn_arounds[i]=time_passed;
 			burst_time[i]=-999;
+			output_flag = 1;
 			
 		}if(burst_time[i]==0){
 			turn_arounds[i]=time_passed;
 			burst_time[i]=-999;
+			output_flag = 1;
 		
 	}
-
+		//if the output flag is true, calc the waittime and print
+		if(output_flag ==1){
+			
+			turn_arounds[i] = turn_arounds[i]-arrival_time[i];
+			wait_time = turn_arounds[i]-temp[i];
+			average_wait_time += wait_time;
+			printf("\nProcess[%d]\t\t %d \t\t\t %d\t \t \t%d \t\t%d\n",i,arrival_time[i],temp[i],turn_arounds[i],wait_time);
+			output_flag = 0;
+		}
 
 	   
        }
@@ -111,12 +123,15 @@ temp[10];
        }
 	//now subract the arival for each turn around to get final turn around	
 	
-       //printing for testing
-       printf("this is before subbing arrival. these are the turn arounds");
-
+       //printing averages
+       printf("AVERAGES:\n");
+	//getting average turnaround
        for (int i =0; i<num_processes; i++){
-	printf("%d \n",turn_arounds[i]);
+	average_turnaround_time+=turn_arounds[i];
        }
+       average_turnaround_time = average_turnaround_time/num_processes;
+	//getting average wait
+       average_wait_time = average_wait_time/num_processes;
 
        //now we need to do wait time. set burst_time back to burst_temp then for waiting time== turnaround - burst time 
     }
