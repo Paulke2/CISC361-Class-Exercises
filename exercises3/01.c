@@ -13,6 +13,8 @@ void* thread(void* arg)
 {
 arg_data* current_thread_data = (arg_data*)arg;
 //start of critical section
+//before starting to enter critical section, lock the semephore
+sem_init(&mutex,0,1);
 printf("\nThread %d entering critical section...\n", current_thread_data->thread_number);
 int local_cnt = cnt;
 for (int i=0; i<MAX_TIMES_TO_INCREMENT; i++) {
@@ -21,11 +23,15 @@ printf("\nThread %d Value: %d\n", current_thread_data->thread_number, local_cnt)
 }
 cnt = local_cnt;
 printf("\nThread %d exiting critical section...\n", current_thread_data->thread_number);
+//decrease semaphore or is this increasing?
+sem_post(&mutex);
 //end of critical section
 return NULL;
 }
+
 int main()
 {
+//I will initiate a semephore with the mutex object created above, 2nd arg 0 b/c not shared between processes and 3rd arg 1 b/c semephoe will first be unlocked
 //pthread objects
 pthread_t id[MAX_NO_OF_THREADS];
 //argument data to send in worker functions
