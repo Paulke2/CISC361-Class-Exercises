@@ -13,8 +13,9 @@ void* thread(void* arg)
 {
 arg_data* current_thread_data = (arg_data*)arg;
 //start of critical section
-//before starting to enter critical section, lock the semephore
-sem_init(&mutex,0,1);
+//before starting to enter critical section, check to see if semaphore is locked. if its not, decrease value to 0 to lock semaphore
+
+sem_wait(&mutex);
 printf("\nThread %d entering critical section...\n", current_thread_data->thread_number);
 int local_cnt = cnt;
 for (int i=0; i<MAX_TIMES_TO_INCREMENT; i++) {
@@ -23,7 +24,10 @@ printf("\nThread %d Value: %d\n", current_thread_data->thread_number, local_cnt)
 }
 cnt = local_cnt;
 printf("\nThread %d exiting critical section...\n", current_thread_data->thread_number);
-//decrease semaphore or is this increasing?
+//decrease semaphore/unlock iti
+//
+//from my understanding, if sem_wait sees the semephore is locked, it will sleep the thread, once sem_post is called, does it wake up
+//every thread? is it a race for which thread then executes or are they in a queue 
 sem_post(&mutex);
 //end of critical section
 return NULL;
@@ -41,6 +45,7 @@ int no_of_threads = MAX_NO_OF_THREADS;
 printf("Creating %d threads...\n", no_of_threads);
 int thread_no = 1;
 //creating the child threads
+sem_init(&mutex,0,1);
 for (thread_no = 1; thread_no <= MAX_NO_OF_THREADS; thread_no++) {
 arg_arr[thread_no - 1].thread_number = thread_no;
 pthread_create(&id[thread_no - 1], NULL, thread, &arg_arr[thread_no - 1]);
