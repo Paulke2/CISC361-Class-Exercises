@@ -54,11 +54,11 @@ buffer[out] = 0;
 //out = out+1;	
 //out = out&BUFFER_SIZE;
 	printf("Consumer %d: Removed item %d from index %d\n", current_thread_data->thread_number, item, out);
-	out = out+1;
+	out = out-1;
 	out =out%BUFFER_SIZE;
 	//do we need to adjust buffer size seeing as the empty is never increased 
-	sem_post(&empty);
-
+	
+sem_post(&empty);
 	}
 	return NULL;
 }
@@ -72,6 +72,7 @@ arg_data producer_arg_arr[NumProducer];
 arg_data consumer_arg_arr[NumConsumer];
 //QUESTION: what is the purpose of pthead_mutex? i assume it is to ensure other producers/consumers do not modify the buffer?
 pthread_mutex_init(&mutex, NULL);
+//maybe since empty is a count, there can be buffer size threads before semaphore locks?
 sem_init(&empty, 0, BUFFER_SIZE);
 sem_init(&full, 0, 0);
 for (int thread_no = 1; thread_no <= NumProducer; thread_no++) {
