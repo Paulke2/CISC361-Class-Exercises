@@ -6,12 +6,13 @@
 #define MAX_ITEMS_TO_PRODUCE 10
 #define MAX_ITEMS_TO_CONSUME 10
 #define BUFFER_SIZE 5
-#define NumProducer 1
+#define NumProducer 3
 #define NumConsumer 1
 sem_t empty;
 sem_t full;
 int in = 0;
 int out = 0;
+int count = 0;
 int buffer[BUFFER_SIZE];
 pthread_mutex_t mutex;
 typedef struct arg_data {
@@ -19,12 +20,13 @@ int thread_number;
 } arg_data;
 void* producer(void* arg)
 {
+
 int item;
 arg_data* current_thread_data = (arg_data*)arg;
 for(int i = 0; i < MAX_ITEMS_TO_PRODUCE; i++) {
 //another QUESTION: why is one a counting semaphore and another a binary? i think this Q means i do not understand counting semaphores
 //make sure to review them soon.
-//pthread_mutex_lock(&mutex); 
+pthread_mutex_lock(&mutex); 
 sem_wait(&empty);
 item = rand();
 //start of critical section
@@ -33,13 +35,15 @@ printf("Producer %d: Inserted item %d into index %d\n", current_thread_data->thr
 in);
 buffer[in]=item;
 in = in+1;
+count=count+1;
 in = in %BUFFER_SIZE;
-if(i>3){
-
+if(count>3){
+//if count is greater than 3, our buffer is full
 
 sem_post(&full);
 }
-//pthread_mutex_unlock(&mutex);
+pthread_mutex_unlock(&mutex);
+
 //end of critical section
 }
 return NULL;
@@ -51,11 +55,9 @@ void* consumer(void* arg)
 arg_data* current_thread_data = (arg_data*)arg;
 for(int i = 0; i < MAX_ITEMS_TO_CONSUME; i++) {
 //start of critical section
-//before i start with consumer, the empty semaphore is a counting semaphore of size buffer_size. the main idea is probably to
-//grab item from the buffer(we just need item) to confirm we have removed the correct element,if the semaphore is locked(0 elements in buffer)  we wait i suppose(sem_wait(&empty)), then once there is an element in buffer, thread wakes up and removes item 
-	
+
 sem_wait(&full);
-pthread_mutex_lock(&mutex);
+//pthread_mutex_lock(&mutex);
 //grab item. this is a circular array so we mod by array size to point back to index 0
 int item = buffer[out];
 buffer[out] = 0;
@@ -68,7 +70,7 @@ buffer[out] = 0;
 	//do we need to adjust buffer size seeing as the empty is never increased 
 	
 sem_post(&empty);
-pthread_mutex_unlock(&mutex);
+//pthread_mutex_unlock(&mutex);
 	}
 	return NULL;
 }
