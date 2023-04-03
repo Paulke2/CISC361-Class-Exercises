@@ -7,9 +7,9 @@ int main()
     int i = 0, num_processes = 0, total_time = 0, x, output_flag = 0,
 time_quantum =0;
     int wait_time = 0, turnaround_time = 0, arrival_time[10], burst_time[10],
-temp[10];
+temp[10],priority[10];
     float average_wait_time = 0, average_turnaround_time = 0;
-    bool round_robin_algorithm = true;
+    bool round_robin_algorithm = false;
     for(i = 0; i < 10; i++)
     {
         arrival_time[i] = 0;
@@ -39,7 +39,10 @@ temp[10];
         printf("Burst Time (>0):\t");
         scanf("%d", &burst_time[i]);
         temp[i] = burst_time[i];
-       
+        //adding priority 
+       	printf("Priority (>0):\t");
+        scanf("%d", &priority[i]);
+        
         if (arrival_time[i] < 0 && burst_time[i] < 1) {
             printf("Incorrect Values Entered");
             i--;
@@ -137,21 +140,60 @@ temp[10];
     }
     else
     {
+	    //for preemtive, we can use the wait_time as a time measurement , loop through processes and get the highest priority
+	    //P with arrival time >= wait_time before we add 1. then we set burst time to -999 to indicate process is finished
+	int done = 0;
 	int old_arrival=0;
-      for(int i = 0;i<num_processes; i ++){
-	average_wait_time = average_wait_time + burst_time[i];
- 
-	turnaround_time = turnaround_time + burst_time[i]-arrival_time[i]+old_arrival;
-	wait_time = turnaround_time-burst_time[i];
-	old_arrival = arrival_time[i];
-	average_turnaround_time = average_turnaround_time + turnaround_time;
-    	printf("\nProcess[%d]\t\t %d \t\t\t %d\t \t \t%d \t\t%d\n",i,arrival_time[i],burst_time[i],turnaround_time,wait_time);
+	int time_passed = 0;
+	while(done<num_processes){
+	
+	int highest_P_index = -1;
 
+	for(int i = 0;i<num_processes; i ++){
+	//wait_time = wait_time + burst_time[i];
+ 	
+	//turnaround_time = turnaround_time + burst_time[i]-arrival_time[i]+old_arrival;
+	//wait_time = turnaround_time-burst_time[i];
+	//old_arrival = arrival_time[i];
+	//average_turnaround_time = average_turnaround_time + turnaround_time;
+    	//
+	//above is the standared FCFS. 
+	//
+	//first loop to find highest priority that has arrived 
+
+	//condition arrival[high]!=arrival[i] gives cpu to process that was first checked if they arrive at same time.
+      if ((arrival_time[i]>= time_passed) && (burst_time[i]>0) && (priority[i]>priority[highest_P_index])){
+	highest_P_index = i;
+      }
+	
+	if(highest_P_index != -1){
+	time_passed =time_passed+1;
+	 //we need to only decrease by 1 time unit. then check if a higher priority p has arrived
+	 burst_time[highest_P_index]=burst_time[highest_P_index]-1;
+	 if(burst_time[highest_P_index]==0){
+		 done=done +1;
+		turnaround_time = time_passed - arrival_time[highest_P_index];
+		wait_time = turnaround_time-temp[highest_P_index];
+		burst_time[highest_P_index] = -999;
+	 
+              printf("\nProcess[%d]\t\t %d \t\t\t %d\t \t \t%d \t\t%d\n",i,arrival_time[i],temp[i],turnaround_time,wait_time);
+	 }
+	}
+	else{
+	//else there is no process that has arrived
+	time_passed=time_passed +1;
+	}	
+      }
+
+	
+
+	    
+	}
 
      	
-      }
+      
       average_turnaround_time = average_turnaround_time/num_processes;
-average_wait_time = average_wait_time/num_processes;
+average_wait_time = wait_time/num_processes;
     }
     // Calculate & Print Average Wait and Turnaround Times
     //average_wait_time = 0;
